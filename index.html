@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商用無料 Webフォント辞典 | Commercial Free Font Chronicle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 初期主要フォント読み込み -->
+  <link id="dynamic-fonts-link" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDPMincho&family=Cinzel:wght@400;700&family=Dela+Gothic+One&family=DotGothic16&family=IBM+Plex+Sans+JP:wght@400;700&family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Kaisei+Tokumin:wght@400;700&family=Kosugi+Maru&family=M+PLUS+1p:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Montserrat:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Potta+One&family=Reggae+One&family=RocknRoll+One&family=Shippori+Mincho:wght@400;700&family=Yuji+Boku&family=Zen+Kaku+Gothic+New:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&family=Zen+Old+Mincho:wght@400;700&display=swap">
+
+  <style>
+    /* キャンパスノート風の罫線と質感 */
+    :root {
+      --bg-canvas: #f8f9fa;
+      --text-dark: #2b2d42;
+      --ruled-line: rgba(203, 213, 225, 0.55);
+      --margin-red: rgba(239, 68, 68, 0.4);
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-dark);
+      font-feature-settings: "palt";
+    }
+
+    /* キャンパスノートの水平罫線背景 */
+    .campus-ruled-bg {
+      background-color: var(--bg-canvas);
+      background-image: 
+        linear-gradient(var(--ruled-line) 1px, transparent 1px);
+      background-size: 100% 32px;
+    }
+
+    /* ノート左端のマージン縦罫線 */
+    .campus-binding {
+      border-left: 2px solid var(--margin-red);
+    }
+
+    /* カード内のテキストプレビュー罫線（ノート用紙） */
+    .preview-ruled {
+      background-image: linear-gradient(var(--ruled-line) 1px, transparent 1px);
+      background-size: 100% 32px;
+      line-height: 32px;
+    }
+
+    /* カスタムスクロールバー */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="campus-ruled-bg min-h-screen flex flex-col font-sans">
+
+  <!-- ヘッダー / ブランド -->
+  <header class="border-b border-slate-300 bg-white/90 backdrop-blur sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 bg-slate-800 text-white rounded flex items-center justify-center font-bold text-lg shadow-inner">
+          字
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-slate-800 flex items-center gap-2">
+            商用無料 Webフォント辞典
+            <span class="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-800 font-medium rounded-full border border-emerald-200">
+              商用利用100%フリー
+            </span>
+          </h1>
+          <p class="text-xs text-slate-500">SIL OFL / Apache 2.0 厳選カタログ・リアルタイム比較</p>
+        </div>
+      </div>
+
+      <!-- モード切り替え & カウンター -->
+      <div class="flex items-center gap-3">
+        <button id="view-mode-toggle" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 shadow-sm">
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span>選択フォントだけ比較</span>
+          <span id="selected-badge" class="px-1.5 py-0.2 bg-slate-800 text-white rounded-full text-[10px]">0</span>
+        </button>
+
+        <button id="reset-all-btn" class="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition" title="装飾と選択のリセット">
+          初期化
+        </button>
+      </div>
+    </div>
+
+    <!-- コントロールバー（入力・装飾・スタイリング） -->
+    <div class="border-t border-slate-200 bg-slate-50/95 px-4 sm:px-6 py-3">
+      <div class="max-w-7xl mx-auto space-y-3">
+        <!-- テキスト入力行 -->
+        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2">
+          <div class="relative flex-1">
+            <input 
+              type="text" 
+              id="live-text-input" 
+              value="敏捷な茶色の狐は、怠惰な犬を飛び越える。2026 Typography." 
+              placeholder="試したいテキストを入力してください..." 
+              class="w-full px-3.5 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent text-slate-800 shadow-inner"
+            >
+          </div>
+          <!-- プリセット例文 -->
+          <div class="flex items-center gap-1 text-xs overflow-x-auto pb-1 md:pb-0">
+            <span class="text-slate-400 whitespace-nowrap pl-1">例文:</span>
+            <button class="preset-btn px-2.5 py-1 rounded bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 whitespace-nowrap transition" data-text="洗練された情報設計と、永く愛される言葉の佇まい。">和文見出し</button>
+            <button class="preset-btn px-2.5 py-1 rounded bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 whitespace-nowrap transition" data-text="すべての思考は、白い余白と一本の罫線から始まる。Design, Code, and Philosophy.">長文</button>
+            <button class="preset-btn px-2.5 py-1 rounded bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 whitespace-nowrap transition" data-text="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 &@#%">英数・記号</button>
+          </div>
+        </div>
+
+        <!-- スタイリング・装飾バー -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-1 text-xs border-t border-slate-200/80">
+          <!-- スライダー群（サイズ・行間・字間） -->
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-500 font-medium">サイズ:</span>
+              <input type="range" id="size-slider" min="14" max="64" value="28" class="w-24 accent-slate-700 cursor-pointer">
+              <span id="size-val" class="font-mono text-slate-700 w-8">28px</span>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-500 font-medium">行間:</span>
+              <input type="range" id="line-height-slider" min="1.0" max="2.6" step="0.1" value="1.6" class="w-20 accent-slate-700 cursor-pointer">
+              <span id="lh-val" class="font-mono text-slate-700 w-7">1.6</span>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-500 font-medium">字間:</span>
+              <input type="range" id="letter-spacing-slider" min="-2" max="15" step="1" value="1" class="w-20 accent-slate-700 cursor-pointer">
+              <span id="ls-val" class="font-mono text-slate-700 w-10">0.01em</span>
+            </div>
+          </div>
+
+          <!-- 装飾トグル & カラーピッカー -->
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- 太字・斜体・下線 -->
+            <div class="inline-flex rounded-lg border border-slate-300 bg-white p-0.5 shadow-sm">
+              <button id="toggle-bold" class="px-2.5 py-1 rounded text-xs font-bold text-slate-700 hover:bg-slate-100 transition" title="太字 (Bold)">B</button>
+              <button id="toggle-italic" class="px-2.5 py-1 rounded text-xs italic font-serif text-slate-700 hover:bg-slate-100 transition" title="斜体 (Italic)">I</button>
+              <button id="toggle-underline" class="px-2.5 py-1 rounded text-xs underline text-slate-700 hover:bg-slate-100 transition" title="下線 (Underline)">U</button>
+              <button id="toggle-linethrough" class="px-2.5 py-1 rounded text-xs line-through text-slate-700 hover:bg-slate-100 transition" title="打消線 (Line-through)">S</button>
+            </div>
+
+            <!-- 文字色 -->
+            <div class="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-300 shadow-sm">
+              <span class="text-slate-500">文字色:</span>
+              <input type="color" id="text-color-picker" value="#2b2d42" class="w-5 h-5 rounded border-0 cursor-pointer bg-transparent">
+              <!-- クイックパレット -->
+              <button class="color-dot w-4 h-4 rounded-full bg-[#2b2d42] border border-slate-300" data-color="#2b2d42" title="墨・ダークグレー"></button>
+              <button class="color-dot w-4 h-4 rounded-full bg-[#1e3a8a] border border-slate-300" data-color="#1e3a8a" title="ネイビー"></button>
+              <button class="color-dot w-4 h-4 rounded-full bg-[#991b1b] border border-slate-300" data-color="#991b1b" title="深紅"></button>
+              <button class="color-dot w-4 h-4 rounded-full bg-[#065f46] border border-slate-300" data-color="#065f46" title="常盤緑"></button>
+            </div>
+
+            <!-- 背景色 -->
+            <div class="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-300 shadow-sm">
+              <span class="text-slate-500">背景:</span>
+              <input type="color" id="bg-color-picker" value="#ffffff" class="w-5 h-5 rounded border-0 cursor-pointer bg-transparent">
+              <button class="bg-dot w-4 h-4 rounded-full bg-white border border-slate-300" data-bg="#ffffff" title="白"></button>
+              <button class="bg-dot w-4 h-4 rounded-full bg-[#f8f9fa] border border-slate-300" data-bg="#f8f9fa" title="キャンパスグレー"></button>
+              <button class="bg-dot w-4 h-4 rounded-full bg-[#fefce8] border border-amber-300" data-bg="#fefce8" title="クリーム用紙"></button>
+              <button class="bg-dot w-4 h-4 rounded-full bg-[#1e293b] border border-slate-700" data-bg="#1e293b" title="ダーク"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- フィルタ・カテゴリバー -->
+    <div class="bg-white/80 border-t border-slate-200 px-4 sm:px-6 py-2.5">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+        <!-- カテゴリタブ -->
+        <div class="flex flex-wrap items-center gap-1" id="category-tabs">
+          <button class="cat-btn px-3 py-1 rounded-full font-medium transition bg-slate-800 text-white" data-category="all">すべて (<span id="count-all">25</span>)</button>
+          <button class="cat-btn px-3 py-1 rounded-full font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-category="gothic">ゴシック体 (<span id="count-gothic">5</span>)</button>
+          <button class="cat-btn px-3 py-1 rounded-full font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-category="mincho">明朝体 (<span id="count-mincho">5</span>)</button>
+          <button class="cat-btn px-3 py-1 rounded-full font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-category="rounded">丸ゴシック (<span id="count-rounded">4</span>)</button>
+          <button class="cat-btn px-3 py-1 rounded-full font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-category="display">デザイン・手書き (<span id="count-display">6</span>)</button>
+          <button class="cat-btn px-3 py-1 rounded-full font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200" data-category="latin">欧文・コード (<span id="count-latin">5</span>)</button>
+        </div>
+
+        <!-- 印象タグフィルタ -->
+        <div class="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+          <span class="text-slate-400">印象:</span>
+          <select id="vibe-select" class="bg-slate-100 border border-slate-200 rounded px-2 py-1 text-slate-700 focus:outline-none">
+            <option value="all">すべての雰囲気</option>
+            <option value="trust">信頼・誠実・堅実</option>
+            <option value="modern">モダン・先進的</option>
+            <option value="elegant">洗練・優雅・文学的</option>
+            <option value="friendly">親しみ・やわらか・POP</option>
+            <option value="japanese">和風・伝統・筆文字</option>
+            <option value="tech">テック・機能美・コード</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ領域 -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+    <!-- 現在のステータス案内バー -->
+    <div class="mb-4 flex flex-wrap items-center justify-between text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span>表示中: <strong id="visible-count" class="text-slate-800">25</strong> 書体</span>
+        <span class="text-slate-300">|</span>
+        <span class="campus-binding pl-2 text-slate-600">カード右上のチェックで複数フォントをピックアップ可能</span>
+      </div>
+      <div id="compare-notice" class="hidden text-amber-700 bg-amber-50 px-2.5 py-1 rounded border border-amber-200 font-medium">
+        ※ 現在「選択したフォントのみ」比較表示中
+      </div>
+    </div>
+
+    <!-- フォントカードグリッド -->
+    <div id="font-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <!-- JavaScriptで動的生成 -->
+    </div>
+
+    <!-- 0件表示時 -->
+    <div id="empty-state" class="hidden text-center py-20 bg-white/70 rounded-xl border border-dashed border-slate-300">
+      <p class="text-slate-500 text-sm mb-2">該当するフォントがありません。</p>
+      <p class="text-xs text-slate-400">選択中のフォントがないか、検索フィルタの条件を緩和してください。</p>
+      <button id="clear-filter-btn" class="mt-4 px-4 py-1.5 text-xs bg-slate-800 text-white rounded-lg">フィルタをリセット</button>
+    </div>
+  </main>
+
+  <!-- コードコピー用モーダル -->
+  <div id="code-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div>
+          <h3 id="modal-font-name" class="font-bold text-slate-800 text-base">Font Name</h3>
+          <p class="text-xs text-slate-500">商用利用コード（HTML/CSS）</p>
+        </div>
+        <button id="modal-close-btn" class="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200 text-xl font-mono leading-none">&times;</button>
+      </div>
+
+      <div class="p-5 space-y-4 overflow-y-auto text-xs">
+        <!-- 1. HTML linkタグ -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-semibold text-slate-700">1. HTMLの &lt;head&gt; 内に貼り付けるコード</span>
+            <button class="copy-btn px-2 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium transition" data-target="code-link">コピー</button>
+          </div>
+          <pre id="code-link" class="p-3 bg-slate-900 text-emerald-400 rounded-lg overflow-x-auto font-mono text-[11px]"></pre>
+        </div>
+
+        <!-- 2. CSS font-family指定 -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-semibold text-slate-700">2. 実践的 CSS font-family 指定（フォールバック付き）</span>
+            <button class="copy-btn px-2 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium transition" data-target="code-css">コピー</button>
+          </div>
+          <pre id="code-css" class="p-3 bg-slate-900 text-emerald-400 rounded-lg overflow-x-auto font-mono text-[11px]"></pre>
+          <p class="mt-1 text-[11px] text-slate-500">※ OS標準（MacのHiragino Sans / WindowsのYu Gothic）を末尾に添えた実務仕様です。</p>
+        </div>
+
+        <!-- 3. ライセンス情報 -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <h4 class="font-bold text-slate-700 mb-1">ライセンスと商用利用について</h4>
+          <p id="modal-license-text" class="text-slate-600 leading-relaxed"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <footer class="border-t border-slate-300 bg-white/70 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>商用無料 Webフォント辞典 — 収録フォントはすべて SIL Open Font License 1.1 または Apache 2.0 に基づき商用無償利用可能です。</p>
+      <p class="text-[11px] text-slate-400 mt-1">※ 成果物の商標登録やフォント単体の再販売は制限されます。各フォントの最新ライセンスは Google Fonts 配布元に準じます。</p>
+    </div>
+  </footer>
+
+  <!-- スクリプト: フォントデータ & ロジック -->
+  <script>
+    // 商用無料フォントマスターデータ（25書体）
+    const FONT_DATA = [
+      // 1. ゴシック体 (gothic)
+      {
+        id: "noto-sans-jp",
+        name: "Noto Sans JP",
+        japaneseName: "Noto Sans 日本語",
+        foundry: "Google / Adobe",
+        category: "gothic",
+        categoryLabel: "ゴシック体",
+        vibe: ["trust", "modern"],
+        vibeLabel: "信頼・モダン",
+        license: "SIL OFL 1.1",
+        description: "現代のWeb標準ゴシック。どんな画面でも破綻しない最高峰の可読性。極細から極太まで豊富なウェイトを誇る。",
+        bestFor: "コーポレートサイト、本文全体、管理画面、ニュースサイト",
+        familyCss: "'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif",
+        googleFontParam: "family=Noto+Sans+JP:wght@100..900"
+      },
+      {
+        id: "zen-kaku-gothic-new",
+        name: "Zen Kaku Gothic New",
+        japaneseName: "Zen 角ゴシック New",
+        foundry: "Yoshimichi Ohira",
+        category: "gothic",
+        categoryLabel: "ゴシック体",
+        vibe: ["modern", "trust"],
+        vibeLabel: "モダン・洗練",
+        license: "SIL OFL 1.1",
+        description: "直線的で端正な美しさを持つ角ゴシック。すっきりとした余白感を演出し、文字を組んだ際に清潔感が出る。",
+        bestFor: "建築・インテリア、デザインスタジオ、ミニマルなWebデザイン",
+        familyCss: "'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif",
+        googleFontParam: "family=Zen+Kaku+Gothic+New:wght@400;500;700"
+      },
+      {
+        id: "m-plus-1p",
+        name: "M PLUS 1p",
+        japaneseName: "M PLUS 1p",
+        foundry: "Coji Morishita",
+        category: "gothic",
+        categoryLabel: "ゴシック体",
+        vibe: ["modern", "friendly"],
+        vibeLabel: "親しみ・幾何学",
+        license: "SIL OFL 1.1",
+        description: "幾何学的な明るさと明快なふところが特徴。明るいトーンのWebサイトやUIコンポーネントによく馴染む。",
+        bestFor: "Webサービス、SaaS製品のUI、若者向けブランド、ブログ",
+        familyCss: "'M PLUS 1p', 'Hiragino Sans', sans-serif",
+        googleFontParam: "family=M+PLUS+1p:wght@400;500;700"
+      },
+      {
+        id: "ibm-plex-sans-jp",
+        name: "IBM Plex Sans JP",
+        japaneseName: "IBM Plex Sans JP",
+        foundry: "IBM",
+        category: "gothic",
+        categoryLabel: "ゴシック体",
+        vibe: ["tech", "trust"],
+        vibeLabel: "テック・機能美",
+        license: "SIL OFL 1.1",
+        description: "IBMが設計したグローバルフォントの日本語版。機械的・工業的な機能美と人間味のあるカーブが融合している。",
+        bestFor: "エンジニア向けツール、BtoBテック企業、ダッシュボード、金融",
+        familyCss: "'IBM Plex Sans JP', 'Hiragino Sans', sans-serif",
+        googleFontParam: "family=IBM+Plex+Sans+JP:wght@400;600;700"
+      },
+      {
+        id: "biz-udpgothic",
+        name: "BIZ UDPGothic",
+        japaneseName: "BIZ UDPゴシック",
+        foundry: "Morisawa",
+        category: "gothic",
+        categoryLabel: "ゴシック体",
+        vibe: ["trust", "friendly"],
+        vibeLabel: "視認性・ユニバーサル",
+        license: "SIL OFL 1.1",
+        description: "モリサワ開発のUD（ユニバーサルデザイン）書体。濁点・半濁点が大きく、誤読を防ぐ圧倒的な見やすさを誇る。",
+        bestFor: "教育・自治体・公共サービス、医療福祉、ドキュメント・長文読書",
+        familyCss: "'BIZ UDPGothic', Meiryo, sans-serif",
+        googleFontParam: "family=BIZ+UDPGothic:wght@400;700"
+      },
+
+      // 2. 明朝体 (mincho)
+      {
+        id: "noto-serif-jp",
+        name: "Noto Serif JP",
+        japaneseName: "Noto Serif 日本語",
+        foundry: "Google / Adobe",
+        category: "mincho",
+        categoryLabel: "明朝体",
+        vibe: ["elegant", "trust"],
+        vibeLabel: "格式・標準明朝",
+        license: "SIL OFL 1.1",
+        description: "端正で格式高いオープン明朝体の最高水準。書籍や長文記事でも疲れず、誠実な品格をサイトに与える。",
+        bestFor: "出版社、オウンドメディア、高級ブランド、コーポレート",
+        familyCss: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+        googleFontParam: "family=Noto+Serif+JP:wght@400;600;700"
+      },
+      {
+        id: "shippori-mincho",
+        name: "Shippori Mincho",
+        japaneseName: "しっぽり明朝",
+        foundry: "Fontdasu",
+        category: "mincho",
+        categoryLabel: "明朝体",
+        vibe: ["elegant", "japanese"],
+        vibeLabel: "文学的・優美",
+        license: "SIL OFL 1.1",
+        description: "東京築地活版製造所の秀英体をお手本にした、流麗で優美な明朝体。文学的な静けさと艶やかさを宿す。",
+        bestFor: "小説・エッセイ、日本酒・和菓子、美術館、ストーリーテリング",
+        familyCss: "'Shippori Mincho', 'Yu Mincho', serif",
+        googleFontParam: "family=Shippori+Mincho:wght@400;600;700"
+      },
+      {
+        id: "zen-old-mincho",
+        name: "Zen Old Mincho",
+        japaneseName: "Zen オールド明朝",
+        foundry: "Yoshimichi Ohira",
+        category: "mincho",
+        categoryLabel: "明朝体",
+        vibe: ["japanese", "elegant"],
+        vibeLabel: "伝統・古風",
+        license: "SIL OFL 1.1",
+        description: "クラシックな骨格を持つオールドスタイル明朝。活字時代の温もりと格調高い落ち着きを併せ持つ。",
+        bestFor: "歴史・文化関連、和風Webサイト、高級旅館、伝統工芸",
+        familyCss: "'Zen Old Mincho', 'Hiragino Mincho ProN', serif",
+        googleFontParam: "family=Zen+Old+Mincho:wght@400;700"
+      },
+      {
+        id: "kaisei-tokumin",
+        name: "Kaisei Tokumin",
+        japaneseName: "解星 特民",
+        foundry: "FontKai / Daisuke Kishitaka",
+        category: "mincho",
+        categoryLabel: "明朝体",
+        vibe: ["modern", "elegant"],
+        vibeLabel: "現代的・力強い明朝",
+        license: "SIL OFL 1.1",
+        description: "明朝体のエレメントに円を取り入れた独自の「解星」シリーズ。モダンで印象深い見出しを構築できる。",
+        bestFor: "ポスター風Webページ、キャッチコピー見出し、ファッション",
+        familyCss: "'Kaisei Tokumin', serif",
+        googleFontParam: "family=Kaisei+Tokumin:wght@400;700"
+      },
+      {
+        id: "biz-udpmincho",
+        name: "BIZ UDPMincho",
+        japaneseName: "BIZ UDP明朝",
+        foundry: "Morisawa",
+        category: "mincho",
+        categoryLabel: "明朝体",
+        vibe: ["trust", "elegant"],
+        vibeLabel: "視認性・UD明朝",
+        license: "SIL OFL 1.1",
+        description: "画面表示での可読性を極限まで高めたモリサワのUD明朝。線がかすれにくく、デジタル画面で驚くほど読みやすい。",
+        bestFor: "デジタル報告書、金融・法務・学術サイト、電子書籍",
+        familyCss: "'BIZ UDPMincho', 'Yu Mincho', serif",
+        googleFontParam: "family=BIZ+UDPMincho:wght@400;700"
+      },
+
+      // 3. 丸ゴシック (rounded)
+      {
+        id: "zen-maru-gothic",
+        name: "Zen Maru Gothic",
+        japaneseName: "Zen 丸ゴシック",
+        foundry: "Yoshimichi Ohira",
+        category: "rounded",
+        categoryLabel: "丸ゴシック",
+        vibe: ["friendly", "modern"],
+        vibeLabel: "やさしい・洗練",
+        license: "SIL OFL 1.1",
+        description: "甘すぎず、洗練された品の良い丸ゴシック。子供っぽくならず、自然体で柔和な雰囲気を表現できる。",
+        bestFor: "カフェ、オーガニック製品、ライフスタイルメディア、ヘルスケア",
+        familyCss: "'Zen Maru Gothic', sans-serif",
+        googleFontParam: "family=Zen+Maru+Gothic:wght@400;500;700"
+      },
+      {
+        id: "m-plus-rounded-1c",
+        name: "M PLUS Rounded 1c",
+        japaneseName: "M PLUS Rounded 1c",
+        foundry: "Coji Morishita",
+        category: "rounded",
+        categoryLabel: "丸ゴシック",
+        vibe: ["friendly", "modern"],
+        vibeLabel: "ポップ・親しみ",
+        license: "SIL OFL 1.1",
+        description: "明るくクリアな表情の丸ゴシック定番。角の丸みが程よく、UIのアクセントや親近感を出したいボタンに好適。",
+        bestFor: "ファミリー向けサービス、コミュニティサイト、モバイルアプリUI",
+        familyCss: "'M PLUS Rounded 1c', sans-serif",
+        googleFontParam: "family=M+PLUS+Rounded+1c:wght@400;500;700"
+      },
+      {
+        id: "kosugi-maru",
+        name: "Kosugi Maru",
+        japaneseName: "小杉丸ゴシック",
+        foundry: "MOTOYA",
+        category: "rounded",
+        categoryLabel: "丸ゴシック",
+        vibe: ["friendly", "trust"],
+        vibeLabel: "すっきり・案内表示",
+        license: "Apache 2.0",
+        description: "モトヤフォントの丸ゴシック。案内標識やサインにも使われる明快で素直な字形が特徴。",
+        bestFor: "案内板風デザイン、インフォグラフィックス、FAQセクション",
+        familyCss: "'Kosugi Maru', sans-serif",
+        googleFontParam: "family=Kosugi+Maru"
+      },
+      {
+        id: "kiwi-maru",
+        name: "Kiwi Maru",
+        japaneseName: "キウイ丸",
+        foundry: "Hiroki Chan",
+        category: "rounded",
+        categoryLabel: "丸ゴシック",
+        vibe: ["friendly", "japanese"],
+        vibeLabel: "手書き感・温もり",
+        license: "SIL OFL 1.1",
+        description: "やや扁平で丸みのある、個性的で温かみあふれる手書き調丸ゴシック。見出しに置くだけで愛らしさが漂う。",
+        bestFor: "絵本・児童書、手作りクラフト、レシピサイト、日記風ブログ",
+        familyCss: "'Kiwi Maru', sans-serif",
+        googleFontParam: "family=Kiwi+Maru:wght@400;500"
+      },
+
+      // 4. デザイン・手書き (display)
+      {
+        id: "dela-gothic-one",
+        name: "Dela Gothic One",
+        japaneseName: "Dela Gothic One",
+        foundry: "artakana",
+        category: "display",
+        categoryLabel: "デザイン書体",
+        vibe: ["modern", "tech"],
+        vibeLabel: "超極太・インパクト",
+        license: "SIL OFL 1.1",
+        description: "どっしりとした平体の極太ゴシック。圧倒的な存在感があり、ポスターやファーストビューの巨大見出しに最適。",
+        bestFor: "LPのメインキャッチ、セール告知、ストリート系ブランド、動画サムネイル",
+        familyCss: "'Dela Gothic One', sans-serif",
+        googleFontParam: "family=Dela+Gothic+One"
+      },
+      {
+        id: "rocknroll-one",
+        name: "RocknRoll One",
+        japaneseName: "ロックンロール One",
+        foundry: "Fontworks",
+        category: "display",
+        categoryLabel: "デザイン書体",
+        vibe: ["friendly", "modern"],
+        vibeLabel: "ポップ・躍動感",
+        license: "SIL OFL 1.1",
+        description: "丸みと直線が交差するリズミカルで軽快なポップフォント。音楽やゲームのような躍動感を演出する。",
+        bestFor: "エンタメ、YouTube連動LP、イベントサイト、若者向けプロモーション",
+        familyCss: "'RocknRoll One', sans-serif",
+        googleFontParam: "family=RocknRoll+One"
+      },
+      {
+        id: "reggae-one",
+        name: "Reggae One",
+        japaneseName: "レゲエ One",
+        foundry: "Fontworks",
+        category: "display",
+        categoryLabel: "デザイン書体",
+        vibe: ["friendly", "modern"],
+        vibeLabel: "ストリート・シャープ",
+        license: "SIL OFL 1.1",
+        description: "フォントワークス発のシャープな角立ちとスピード感あふれるディスプレイ書体。キレのある世界観を作る。",
+        bestFor: "スポーツ、ゲーム、サブカルチャー、フェス特設サイト",
+        familyCss: "'Reggae One', sans-serif",
+        googleFontParam: "family=Reggae+One"
+      },
+      {
+        id: "yuji-boku",
+        name: "Yuji Boku",
+        japaneseName: "悠々ゴシック / ゆうじ 墨",
+        foundry: "Kinuta Font Factory",
+        category: "display",
+        categoryLabel: "デザイン書体",
+        vibe: ["japanese", "elegant"],
+        vibeLabel: "筆文字・墨痕",
+        license: "SIL OFL 1.1",
+        description: "毛筆の自由な運筆と墨のにじみを再現した本格毛筆フォント。純和風の世界観を力強く描き出す。",
+        bestFor: "居酒屋・和食店、伝統芸能、お祭りイベント、お寺・神社",
+        familyCss: "'Yuji Boku', serif",
+        googleFontParam: "family=Yuji+Boku"
+      },
+      {
+        id: "dotgothic16",
+        name: "DotGothic16",
+        japaneseName: "ドットゴシック16",
+        foundry: "Fontworks",
+        category: "display",
+        categoryLabel: "デザイン書体",
+        vibe: ["tech", "friendly"],
+        vibeLabel: "ピクセル・レトロゲーム",
+        license: "SIL OFL 1.1",
+        description: "懐かしい16×16ドットのピクセルフォント。80〜90年代のレトロゲームや電子掲示板の雰囲気を完全再現。",
+        bestFor: "インディーズゲーム、Web3・ギーク系プロジェクト、レトロカルチャー",
+        familyCss: "'DotGothic16', sans-serif",
+        googleFontParam: "family=DotGothic16"
+      },
+      {
+        id: "potta-one",
+        name: "Potta One",
+        japaneseName: "ポッタ One",
+        foundry: "Fontworks",
+        category: "display",
+        categoryLabel: "デザイン書体",
+        vibe: ["friendly"],
+        vibeLabel: "ふっくら・コミカル",
+        license: "SIL OFL 1.1",
+        description: "筆でぷっくりと描いたような愛嬌のある手書き風文字。親しみやすさと遊び心を瞬時に与える。",
+        bestFor: "子供向けコンテンツ、漫画吹き出し、ペット関連、可愛い雑貨店",
+        familyCss: "'Potta One', cursive",
+        googleFontParam: "family=Potta+One"
+      },
+
+      // 5. 欧文・テック (latin)
+      {
+        id: "inter",
+        name: "Inter",
+        japaneseName: "Inter（欧文）",
+        foundry: "Rasmus Andersson",
+        category: "latin",
+        categoryLabel: "欧文サンセリフ",
+        vibe: ["tech", "modern"],
+        vibeLabel: "現代UIの最高峰",
+        license: "SIL OFL 1.1",
+        description: "世界中のUIデザイナーに愛されるデジタル画面専用サンセリフ。数字や小文字の視認性が極めて高い。",
+        bestFor: "SaaS、Webダッシュボード、英語混在の見出し、コードとUI",
+        familyCss: "'Inter', 'Noto Sans JP', sans-serif",
+        googleFontParam: "family=Inter:wght@400;600;700"
+      },
+      {
+        id: "montserrat",
+        name: "Montserrat",
+        japaneseName: "Montserrat（欧文）",
+        foundry: "Julieta Ulanovsky",
+        category: "latin",
+        categoryLabel: "欧文サンセリフ",
+        vibe: ["modern", "trust"],
+        vibeLabel: "幾何学・都市的",
+        license: "SIL OFL 1.1",
+        description: "ブエノスアイレスの伝統的な街頭サインから着想を得たジオメトリック書体。大文字見出しで抜群のモダンさを誇る。",
+        bestFor: "ブランドロゴ、ポスター見出し、建築・ファッションサイト",
+        familyCss: "'Montserrat', 'Noto Sans JP', sans-serif",
+        googleFontParam: "family=Montserrat:wght@400;700;800"
+      },
+      {
+        id: "playfair-display",
+        name: "Playfair Display",
+        japaneseName: "Playfair Display（欧文）",
+        foundry: "Claus Eggers Sørensen",
+        category: "latin",
+        categoryLabel: "欧文セリフ",
+        vibe: ["elegant"],
+        vibeLabel: "優雅・クラシック",
+        license: "SIL OFL 1.1",
+        description: "18世紀後半の活字印刷を起源とする高貴なトランジショナルセリフ。繊細なヘアラインと太いステムのコントラストが美しい。",
+        bestFor: "高級ホテル、コスメ、ハイジュエリー、結婚式・ブライダル",
+        familyCss: "'Playfair Display', 'Shippori Mincho', serif",
+        googleFontParam: "family=Playfair+Display:ital,wght@0,400;0,700;1,400"
+      },
+      {
+        id: "cinzel",
+        name: "Cinzel",
+        japaneseName: "Cinzel（欧文）",
+        foundry: "Natanael Gama",
+        category: "latin",
+        categoryLabel: "欧文セリフ",
+        vibe: ["elegant", "trust"],
+        vibeLabel: "古代ローマ・威厳",
+        license: "SIL OFL 1.1",
+        description: "古代ローマの碑文銘をベースにした大文字中心のセリフ書体。圧倒的な権威とアカデミックな風格を醸し出す。",
+        bestFor: "法律事務所、学術機関、高級ブランドロゴ、映画タイトル",
+        familyCss: "'Cinzel', 'Noto Serif JP', serif",
+        googleFontParam: "family=Cinzel:wght@400;700"
+      },
+      {
+        id: "jetbrains-mono",
+        name: "JetBrains Mono",
+        japaneseName: "JetBrains Mono（等幅）",
+        foundry: "JetBrains",
+        category: "latin",
+        categoryLabel: "等幅・コード",
+        vibe: ["tech"],
+        vibeLabel: "開発者向け等幅",
+        license: "SIL OFL 1.1",
+        description: "JetBrainsが開発者向けに設計したプログラミング用等幅フォント。記号の識別性と長時間の読解疲労軽減を追求。",
+        bestFor: "技術ブログ、ソースコード埋め込み、開発者向けドキュメント",
+        familyCss: "'JetBrains Mono', monospace",
+        googleFontParam: "family=JetBrains+Mono:wght@400;700"
+      }
+    ];
+
+    // アプリケーションの状態管理
+    const state = {
+      text: "敏捷な茶色の狐は、怠惰な犬を飛び越える。2026 Typography.",
+      fontSize: 28,
+      lineHeight: 1.6,
+      letterSpacing: "0.01em",
+      isBold: false,
+      isItalic: false,
+      isUnderline: false,
+      isLineThrough: false,
+      textColor: "#2b2d42",
+      bgColor: "#ffffff",
+      currentCategory: "all",
+      currentVibe: "all",
+      selectedFonts: new Set(),
+      compareOnly: false
+    };
+
+    // DOM要素の参照
+    const liveTextInput = document.getElementById("live-text-input");
+    const sizeSlider = document.getElementById("size-slider");
+    const sizeVal = document.getElementById("size-val");
+    const lhSlider = document.getElementById("line-height-slider");
+    const lhVal = document.getElementById("lh-val");
+    const lsSlider = document.getElementById("letter-spacing-slider");
+    const lsVal = document.getElementById("ls-val");
+
+    const toggleBold = document.getElementById("toggle-bold");
+    const toggleItalic = document.getElementById("toggle-italic");
+    const toggleUnderline = document.getElementById("toggle-underline");
+    const toggleLinethrough = document.getElementById("toggle-linethrough");
+
+    const textColorPicker = document.getElementById("text-color-picker");
+    const bgColorPicker = document.getElementById("bg-color-picker");
+
+    const fontGrid = document.getElementById("font-grid");
+    const visibleCount = document.getElementById("visible-count");
+    const selectedBadge = document.getElementById("selected-badge");
+    const viewModeToggle = document.getElementById("view-mode-toggle");
+    const compareNotice = document.getElementById("compare-notice");
+    const emptyState = document.getElementById("empty-state");
+
+    const codeModal = document.getElementById("code-modal");
+    const modalCloseBtn = document.getElementById("modal-close-btn");
+    const modalFontName = document.getElementById("modal-font-name");
+    const codeLink = document.getElementById("code-link");
+    const codeCss = document.getElementById("code-css");
+    const modalLicenseText = document.getElementById("modal-license-text");
+
+    // 初期化
+    function init() {
+      setupEventListeners();
+      renderFontCards();
+      updateSelectedBadge();
+    }
+
+    // イベントリスナー登録
+    function setupEventListeners() {
+      // テキスト入力
+      liveTextInput.addEventListener("input", (e) => {
+        state.text = e.target.value || "サンプルテキスト";
+        updateTextInCards();
+      });
+
+      // プリセットボタン
+      document.querySelectorAll(".preset-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          liveTextInput.value = btn.dataset.text;
+          state.text = btn.dataset.text;
+          updateTextInCards();
+        });
+      });
+
+      // スライダー
+      sizeSlider.addEventListener("input", (e) => {
+        state.fontSize = e.target.value;
+        sizeVal.textContent = `${state.fontSize}px`;
+        updateStylesInCards();
+      });
+
+      lhSlider.addEventListener("input", (e) => {
+        state.lineHeight = e.target.value;
+        lhVal.textContent = state.lineHeight;
+        updateStylesInCards();
+      });
+
+      lsSlider.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value, 10);
+        state.letterSpacing = (val * 0.01).toFixed(2) + "em";
+        lsVal.textContent = state.letterSpacing;
+        updateStylesInCards();
+      });
+
+      // 装飾トグル
+      toggleBold.addEventListener("click", () => {
+        state.isBold = !state.isBold;
+        toggleBold.classList.toggle("bg-slate-800", state.isBold);
+        toggleBold.classList.toggle("text-white", state.isBold);
+        updateStylesInCards();
+      });
+
+      toggleItalic.addEventListener("click", () => {
+        state.isItalic = !state.isItalic;
+        toggleItalic.classList.toggle("bg-slate-800", state.isItalic);
+        toggleItalic.classList.toggle("text-white", state.isItalic);
+        updateStylesInCards();
+      });
+
+      toggleUnderline.addEventListener("click", () => {
+        state.isUnderline = !state.isUnderline;
+        toggleUnderline.classList.toggle("bg-slate-800", state.isUnderline);
+        toggleUnderline.classList.toggle("text-white", state.isUnderline);
+        updateStylesInCards();
+      });
+
+      toggleLinethrough.addEventListener("click", () => {
+        state.isLineThrough = !state.isLineThrough;
+        toggleLinethrough.classList.toggle("bg-slate-800", state.isLineThrough);
+        toggleLinethrough.classList.toggle("text-white", state.isLineThrough);
+        updateStylesInCards();
+      });
+
+      // カラーピッカー
+      textColorPicker.addEventListener("input", (e) => {
+        state.textColor = e.target.value;
+        updateStylesInCards();
+      });
+
+      document.querySelectorAll(".color-dot").forEach(dot => {
+        dot.addEventListener("click", () => {
+          state.textColor = dot.dataset.color;
+          textColorPicker.value = state.textColor;
+          updateStylesInCards();
+        });
+      });
+
+      bgColorPicker.addEventListener("input", (e) => {
+        state.bgColor = e.target.value;
+        updateStylesInCards();
+      });
+
+      document.querySelectorAll(".bg-dot").forEach(dot => {
+        dot.addEventListener("click", () => {
+          state.bgColor = dot.dataset.bg;
+          bgColorPicker.value = state.bgColor;
+          updateStylesInCards();
+        });
+      });
+
+      // カテゴリタブ
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".cat-btn").forEach(b => {
+            b.classList.remove("bg-slate-800", "text-white");
+            b.classList.add("bg-slate-100", "text-slate-600");
+          });
+          btn.classList.add("bg-slate-800", "text-white");
+          btn.classList.remove("bg-slate-100", "text-slate-600");
+          state.currentCategory = btn.dataset.category;
+          renderFontCards();
+        });
+      });
+
+      // 印象選択
+      document.getElementById("vibe-select").addEventListener("change", (e) => {
+        state.currentVibe = e.target.value;
+        renderFontCards();
+      });
+
+      // 選択比較トグル
+      viewModeToggle.addEventListener("click", () => {
+        state.compareOnly = !state.compareOnly;
+        viewModeToggle.classList.toggle("bg-slate-800", state.compareOnly);
+        viewModeToggle.classList.toggle("text-white", state.compareOnly);
+        viewModeToggle.classList.toggle("bg-white", !state.compareOnly);
+        viewModeToggle.classList.toggle("text-slate-700", !state.compareOnly);
+        compareNotice.classList.toggle("hidden", !state.compareOnly);
+        renderFontCards();
+      });
+
+      // リセット
+      document.getElementById("reset-all-btn").addEventListener("click", () => {
+        state.selectedFonts.clear();
+        state.compareOnly = false;
+        state.isBold = false;
+        state.isItalic = false;
+        state.isUnderline = false;
+        state.isLineThrough = false;
+        state.textColor = "#2b2d42";
+        state.bgColor = "#ffffff";
+        state.fontSize = 28;
+        state.lineHeight = 1.6;
+        state.letterSpacing = "0.01em";
+
+        liveTextInput.value = "敏捷な茶色の狐は、怠惰な犬を飛び越える。2026 Typography.";
+        state.text = liveTextInput.value;
+        sizeSlider.value = 28;
+        sizeVal.textContent = "28px";
+        lhSlider.value = 1.6;
+        lhVal.textContent = "1.6";
+        lsSlider.value = 1;
+        lsVal.textContent = "0.01em";
+        textColorPicker.value = "#2b2d42";
+        bgColorPicker.value = "#ffffff";
+
+        [toggleBold, toggleItalic, toggleUnderline, toggleLinethrough].forEach(btn => {
+          btn.classList.remove("bg-slate-800", "text-white");
+        });
+
+        viewModeToggle.classList.remove("bg-slate-800", "text-white");
+        viewModeToggle.classList.add("bg-white", "text-slate-700");
+        compareNotice.classList.add("hidden");
+
+        updateSelectedBadge();
+        renderFontCards();
+      });
+
+      // 0件時リセットボタン
+      document.getElementById("clear-filter-btn").addEventListener("click", () => {
+        state.compareOnly = false;
+        state.currentCategory = "all";
+        state.currentVibe = "all";
+        document.getElementById("vibe-select").value = "all";
+        document.querySelectorAll(".cat-btn").forEach(b => {
+          b.classList.remove("bg-slate-800", "text-white");
+          b.classList.add("bg-slate-100", "text-slate-600");
+        });
+        document.querySelector(".cat-btn[data-category='all']").classList.add("bg-slate-800", "text-white");
+        viewModeToggle.classList.remove("bg-slate-800", "text-white");
+        viewModeToggle.classList.add("bg-white", "text-slate-700");
+        compareNotice.classList.add("hidden");
+        renderFontCards();
+      });
+
+      // モーダル閉じる
+      modalCloseBtn.addEventListener("click", () => codeModal.classList.add("hidden"));
+      codeModal.addEventListener("click", (e) => {
+        if (e.target === codeModal) codeModal.classList.add("hidden");
+      });
+
+      // コピーボタン群
+      document.querySelectorAll(".copy-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetEl = document.getElementById(btn.dataset.target);
+          navigator.clipboard.writeText(targetEl.textContent).then(() => {
+            const original = btn.textContent;
+            btn.textContent = "コピー完了！";
+            btn.classList.add("bg-emerald-600", "text-white");
+            setTimeout(() => {
+              btn.textContent = original;
+              btn.classList.remove("bg-emerald-600", "text-white");
+            }, 1800);
+          });
+        });
+      });
+    }
+
+    // フィルタリング処理
+    function getFilteredFonts() {
+      return FONT_DATA.filter(font => {
+        // 比較のみモード
+        if (state.compareOnly && !state.selectedFonts.has(font.id)) {
+          return false;
+        }
+        // カテゴリ
+        if (state.currentCategory !== "all" && font.category !== state.currentCategory) {
+          return false;
+        }
+        // 印象タグ
+        if (state.currentVibe !== "all" && !font.vibe.includes(state.currentVibe)) {
+          return false;
+        }
+        return true;
+      });
+    }
+
+    // カード描画
+    function renderFontCards() {
+      const fonts = getFilteredFonts();
+      visibleCount.textContent = fonts.length;
+
+      if (fonts.length === 0) {
+        fontGrid.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      emptyState.classList.add("hidden");
+
+      fontGrid.innerHTML = fonts.map(font => {
+        const isSelected = state.selectedFonts.has(font.id);
+        return `
+          <div class="font-card bg-white rounded-xl border ${isSelected ? 'border-slate-800 ring-2 ring-slate-800/10' : 'border-slate-300'} shadow-sm hover:shadow-md transition flex flex-col overflow-hidden" data-id="${font.id}">
+            <!-- カードヘッダー -->
+            <div class="px-4 py-3 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-xs px-2 py-0.5 rounded font-medium bg-slate-200 text-slate-700">${font.categoryLabel}</span>
+                <div class="truncate">
+                  <h3 class="font-bold text-slate-800 text-sm tracking-tight truncate">${font.name}</h3>
+                  <span class="text-[11px] text-slate-400 font-sans">${font.japaneseName} · ${font.foundry}</span>
+                </div>
+              </div>
+
+              <!-- 選択チェックボックス ＆ コードボタン -->
+              <div class="flex items-center gap-2 shrink-0">
+                <button class="code-btn px-2 py-1 rounded text-xs text-slate-600 bg-white border border-slate-300 hover:bg-slate-100 transition flex items-center gap-1" data-id="${font.id}">
+                  <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                  <span>CSS</span>
+                </button>
+
+                <label class="flex items-center gap-1.5 cursor-pointer text-xs text-slate-600 bg-white px-2 py-1 rounded border border-slate-300 select-none hover:bg-slate-100">
+                  <input type="checkbox" class="font-checkbox rounded text-slate-800 accent-slate-800" data-id="${font.id}" ${isSelected ? 'checked' : ''}>
+                  <span>比較</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- テキストプレビュー領域（キャンパスノート罫線） -->
+            <div class="p-5 flex-1 preview-container relative transition-colors duration-150" style="background-color: ${state.bgColor};">
+              <div 
+                class="font-preview-text break-words transition-all duration-75"
+                style="
+                  font-family: ${font.familyCss};
+                  font-size: ${state.fontSize}px;
+                  line-height: ${state.lineHeight};
+                  letter-spacing: ${state.letterSpacing};
+                  font-weight: ${state.isBold ? '700' : '400'};
+                  font-style: ${state.isItalic ? 'italic' : 'normal'};
+                  text-decoration: ${getTextDecoration()};
+                  color: ${state.textColor};
+                "
+              >${escapeHtml(state.text)}</div>
+            </div>
+
+            <!-- 解説 & 特徴フッター -->
+            <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+              <p class="leading-relaxed line-clamp-2">${font.description}</p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px] text-slate-500 border-t border-slate-200/60">
+                <span class="truncate"><strong class="text-slate-700">おすすめ用途:</strong> ${font.bestFor}</span>
+                <span class="px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 font-mono text-[10px] border border-emerald-200 shrink-0">${font.license}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      attachCardEventListeners();
+    }
+
+    // 装飾状態からtext-decoration文字列を生成
+    function getTextDecoration() {
+      const decos = [];
+      if (state.isUnderline) decos.push("underline");
+      if (state.isLineThrough) decos.push("line-through");
+      return decos.length > 0 ? decos.join(" ") : "none";
+    }
+
+    // HTMLエスケープ
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // カード内部イベント
+    function attachCardEventListeners() {
+      // チェックボックス
+      document.querySelectorAll(".font-checkbox").forEach(chk => {
+        chk.addEventListener("change", (e) => {
+          const id = e.target.dataset.id;
+          if (e.target.checked) {
+            state.selectedFonts.add(id);
+          } else {
+            state.selectedFonts.delete(id);
+          }
+          updateSelectedBadge();
+          if (state.compareOnly) {
+            renderFontCards();
+          } else {
+            // 単一カードのボーダーのみ更新
+            const card = document.querySelector(`.font-card[data-id="${id}"]`);
+            if (card) {
+              card.classList.toggle("border-slate-800", e.target.checked);
+              card.classList.toggle("ring-2", e.target.checked);
+              card.classList.toggle("ring-slate-800/10", e.target.checked);
+              card.classList.toggle("border-slate-300", !e.target.checked);
+            }
+          }
+        });
+      });
+
+      // コード取得ボタン
+      document.querySelectorAll(".code-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const font = FONT_DATA.find(f => f.id === btn.dataset.id);
+          if (!font) return;
+          showCodeModal(font);
+        });
+      });
+    }
+
+    // プレビューテキストのみ更新（再レンダリングなしで高速反映）
+    function updateTextInCards() {
+      const escaped = escapeHtml(state.text);
+      document.querySelectorAll(".font-preview-text").forEach(el => {
+        el.innerHTML = escaped;
+      });
+    }
+
+    // スタイル変更の高速一括適用
+    function updateStylesInCards() {
+      const weight = state.isBold ? "700" : "400";
+      const style = state.isItalic ? "italic" : "normal";
+      const deco = getTextDecoration();
+
+      document.querySelectorAll(".font-preview-text").forEach(el => {
+        el.style.fontSize = `${state.fontSize}px`;
+        el.style.lineHeight = state.lineHeight;
+        el.style.letterSpacing = state.letterSpacing;
+        el.style.fontWeight = weight;
+        el.style.fontStyle = style;
+        el.style.textDecoration = deco;
+        el.style.color = state.textColor;
+      });
+
+      document.querySelectorAll(".preview-container").forEach(el => {
+        el.style.backgroundColor = state.bgColor;
+      });
+    }
+
+    // 選択中カウンターバッジ更新
+    function updateSelectedBadge() {
+      selectedBadge.textContent = state.selectedFonts.size;
+    }
+
+    // コードモーダル表示
+    function showCodeModal(font) {
+      modalFontName.textContent = `${font.name} (${font.japaneseName})`;
+
+      // HTML Link タグ
+      const linkTag = `<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?${font.googleFontParam}&display=swap" rel="stylesheet">`;
+      codeLink.textContent = linkTag;
+
+      // CSS font-family
+      const cssRule = `/* ${font.name} 実装指定 */\nbody {\n  font-family: ${font.familyCss};\n}`;
+      codeCss.textContent = cssRule;
+
+      // ライセンス文面
+      modalLicenseText.innerHTML = `
+        このフォントは <strong>${font.license}</strong> のもとで配布されています。<br>
+        Webサイト制作・商用出版・商用アプリ開発・ロゴ作成において<strong>完全無料・商用利用可能</strong>です。<br>
+        ※ フォントデータそのものの単体再販売や商標登録は禁止されています。
+      `;
+
+      codeModal.classList.remove("hidden");
+    }
+
+    // 起動
+    init();
+  </script>
+</body>
+</html>
